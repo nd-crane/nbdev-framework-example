@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "nbdev-framework-example"
+  site-url: "https://nd-crane.github.io/nbdev-framework-example"
+  description: "An example taking Lindsey Michie's FAA data science project and wrapping it with the best practices of the framework group, including documentation with nbdev."
+  repo-branch: main
+  repo-url: "https://github.com/nd-crane/nbdev-framework-example"
