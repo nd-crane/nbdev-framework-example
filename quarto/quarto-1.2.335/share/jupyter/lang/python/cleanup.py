@@ -1,3 +1,0 @@
-
-# reset state
-%reset
