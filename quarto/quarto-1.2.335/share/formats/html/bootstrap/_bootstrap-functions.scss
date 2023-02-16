@@ -1,0 +1,275 @@
+// Dims a color (either making it more white or more black)
+@function theme-dim($baseColor, $amount) {
+  @if (tone($baseColor) == "dark") {
+    @return lighten($baseColor, $amount);
+  } @else {
+    @return darken($baseColor, $amount);
+  }
+}
+
+// Provides a contrast color for a given color
+// The color is the starting color that will used to form a contrasting color
+// The bgColor is the color that will be used to test contrast (e.g. the color
+// will be shifted until its contrast against the bgColor is acceptable)
+@function theme-contrast($color, $bgColor, $level: "AAA") {
+  // These will be defined in bootstrap, but creating values here
+  // That will make this function accessible to callers prior to bootstrap variables
+  // being set
+  $black: rgb(0, 0, 0) !default;
+  $white: rgb(255, 255, 255) !default;
+
+  @if tone($bgColor) == "light" {
+    @return accessibleContrast($color, $black, $bgColor, $level);
+  } @else {
+    @return accessibleContrast($color, $white, $bgColor, $level);
+  }
+}
+
+@function accessibleContrast($startColor, $mixColor, $bgColor, $level: "AAA") {
+  // A: 3:1
+  // AA: 4.5:1
+  // AAA: 7:1
+  $goalContrastRatio: 3;
+  @if $level == "AA" {
+    $goalContrastRatio: 4.5;
+  } @else {
+    $goalContrastRatio: 7;
+  }
+
+  $percentMix: 100;
+  $contrastRatio: 0;
+  $contrastColor: null;
+  @while ($contrastRatio < $goalContrastRatio and $percentMix > 0) {
+    $contrastColor: mix($startColor, $mixColor, percentage($percentMix/100));
+    $contrastRatio: contrast($contrastColor, $bgColor);
+    $percentMix: $percentMix - 1;
+  }
+
+  @return $contrastColor;
+}
+
+// Fades a color towards the background color
+@function theme-fade($baseColor, $backgroundColor, $amount) {
+  @if (tone($backgroundColor) == "dark") {
+    @return darken($baseColor, $amount);
+  } @else {
+    @return lighten($baseColor, $amount);
+  }
+}
+
+@function theme-highlight($baseColor, $backgroundColor, $amount) {
+  @if (tone($backgroundColor) == "dark") {
+    @return lighten($baseColor, $amount);
+  } @else {
+    @return darken($baseColor, $amount);
+  }
+}
+
+@function theme-override-value($theme, $varname, $default) {
+  // These will be defined in bootstrap, but creating values here
+  // That will make this function accessible to callers prior to bootstrap variables
+  // being set
+  $black: rgb(0, 0, 0) !default;
+  $white: rgb(255, 255, 255) !default;
+  $gray-500: #adb5bd !default;
+  $gray-300: #dee2e6 !default;
+  $blue: #0d6efd !default;
+
+  $theme-overrides: (
+    cerulean: (
+      navbar-fg: $white,
+    ),
+    cosmo: (),
+    cyborg: (
+      navbar-bg: if(variable-exists(secondary), $secondary, $black),
+      navbar-hl: $white,
+    ),
+    darkly: (
+      navbar-fg: $gray-300,
+      navbar-hl: $white,
+      input-border-color: $gray-500,
+    ),
+    flatly: (
+      navbar-hl: $white,
+    ),
+    journal: (
+      navbar-fg: rgba($white, 0.7),
+      navbar-hl: $white,
+    ),
+    litera: (
+      navbar-bg: $white,
+    ),
+    lumen: (
+      navbar-fg: rgba($white, 0.7),
+      navbar-hl: $white,
+    ),
+    lux: (),
+    materia: (
+      navbar-fg: rgba($white, 0.7),
+      navbar-hl: $white,
+    ),
+    minty: (
+      navbar-fg: $white,
+    ),
+    morph: (
+      navbar-bg: if(variable-exists(body-bg), $body-bg, $black),
+      navbar-fg: rgba($black, 0.5),
+    ),
+    pulse: (
+      navbar-fg: rgba($white, 0.7),
+      navbar-hl: $white,
+    ),
+    quartz: (
+      navbar-fg: rgba($white, 0.8),
+      navbar-hl: $white,
+    ),
+    sandstone: (
+      navbar-bg: if(variable-exists(dark), $dark, $black),
+      navbar-fg: rgba($white, 0.7),
+      navbar-hl: $white,
+    ),
+    simplex: (
+      navbar-bg: $white,
+      navbar-fg: rgba($black, 0.6),
+      navbar-hl: $black,
+    ),
+    sketchy: (
+      navbar-fg: $white,
+    ),
+    slate: (),
+    solar: (
+      navbar-bg: if(variable-exists(dark), $dark, $black),
+      navbar-hl: $white,
+    ),
+    spacelab: (
+      navbar-bg: if(variable-exists(light), $light, #bbb),
+      navbar-hl: if(variable-exists(link-color), $link-color, $blue),
+    ),
+    superhero: (
+      navbar-bg: if(variable-exists(dark), $dark, $black),
+      navbar-hl: $white,
+    ),
+    united: (
+      navbar-fg: rgba($white, 0.8),
+      navbar-hl: $white,
+    ),
+    vapor: (
+      navbar-fg: rgba($white, 0.8),
+      navbar-hl: $white,
+    ),
+    yeti: (),
+    zephyr: (),
+  );
+
+  $val: null;
+  @if ($theme != null) {
+    $theme-vals: quarto-map.get($theme-overrides, $theme);
+    @if ($theme-vals != null) {
+      $val: quarto-map.get($theme-vals, $varname);
+    }
+  }
+
+  @if ($val != null) {
+    @return $val;
+  } @else {
+    @return $default;
+  }
+}
+
+@function theme-navbar-bg($theme, $primary) {
+  $white: rgb(255, 255, 255) !default;
+
+  // These will be defined in bootstrap, but creating values here
+  // That will make this function accessible to callers prior to bootstrap variables
+  // being set
+  $theme-bgs: (
+    litera: $white,
+    cyborg: if(variable-exists(body-bg), $body-bg, #000),
+  );
+
+  $bg: quarto-map.get($theme-bgs, $theme);
+  @if ($bg != null) {
+    @return $bg;
+  } @else {
+    @return if(variable-exists(primary), $primary, #fff);
+  }
+}
+
+@function theme-navbar-fg($theme, $primary) {
+  $white: rgb(255, 255, 255) !default;
+
+  // These will be defined in bootstrap, but creating values here
+  // That will make this function accessible to callers prior to bootstrap variables
+  // being set
+  $theme-fgs: (
+    cerulean: $white,
+  );
+
+  $bg: quarto-map.get($theme-bgs, $theme);
+  @if ($bg != null) {
+    @return $bg;
+  } @else {
+    @return if(variable-exists(primary), $primary, #fff);
+  }
+}
+
+@function repeat-chars($chars, $n) {
+  $final: "";
+  @for $i from 1 through $n {
+    $final: $final + $chars;
+  }
+  @return $final;
+}
+
+@function _linear-channel-value($channel-value) {
+  $normalized-channel-value: $channel-value / 255;
+  @if $normalized-channel-value < 0.03928 {
+    @return $normalized-channel-value / 12.92;
+  }
+
+  @return quarto-math.pow(($normalized-channel-value + 0.055)/1.055, 2.4);
+}
+
+// Calculate the luminance for a color.
+// See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+@function luminance($color) {
+  $red: _linear-channel-value(quarto-color.red($color));
+  $green: _linear-channel-value(quarto-color.green($color));
+  $blue: _linear-channel-value(quarto-color.blue($color));
+
+  @return 0.2126 * $red + 0.7152 * $green + 0.0722 * $blue;
+}
+
+// Calculate the contrast ratio between two colors.
+// See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+@function contrast($back, $front) {
+  $backLum: luminance($back) + 0.05;
+  $foreLum: luminance($front) + 0.05;
+
+  @return quarto-math.max($backLum, $foreLum) /
+    quarto-math.min($backLum, $foreLum);
+}
+
+// Determine whether the color is 'light' or 'dark'.
+@function tone($color) {
+  @if $color == "dark" or $color == "light" {
+    @return $color;
+  }
+
+  $minimumContrast: 3.1;
+
+  $lightContrast: contrast($color, white);
+  $darkContrast: contrast($color, rgba(black, 0.87));
+
+  @if ($lightContrast < $minimumContrast) and ($darkContrast > $lightContrast) {
+    @return "light";
+  } @else {
+    @return "dark";
+  }
+}
+
+// Determine whether to use dark or light text on top of given color to meet accessibility standards for contrast.
+// Returns 'dark' if the given color is light and 'light' if the given color is dark.
+@function contrast-tone($color) {
+  @return if(tone($color) == "dark", "light", "dark");
+}

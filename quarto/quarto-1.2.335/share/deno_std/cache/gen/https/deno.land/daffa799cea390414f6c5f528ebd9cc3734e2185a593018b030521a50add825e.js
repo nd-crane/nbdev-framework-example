@@ -1,0 +1,45 @@
+// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+import { bytesToUuid, uuidToBytes } from "./_common.ts";
+import { concat } from "../bytes/mod.ts";
+import { assert } from "../_util/assert.ts";
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+/**
+ * Validate that the passed UUID is an RFC4122 v5 UUID.
+ *
+ * ```ts
+ * import { generate as generateV5, validate } from "./v5.ts";
+ *
+ * validate(await generateV5("6ba7b810-9dad-11d1-80b4-00c04fd430c8", new Uint8Array())); // true
+ * validate(crypto.randomUUID()); // false
+ * validate("this-is-not-a-uuid"); // false
+ * ```
+ */ export function validate(id) {
+    return UUID_RE.test(id);
+}
+/**
+ * Generate a RFC4122 v5 UUID (SHA-1 namespace).
+ *
+ * ```js
+ * import { generate } from "./v5.ts";
+ *
+ * const NAMESPACE_URL = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+ *
+ * const uuid = await generate(NAMESPACE_URL, new TextEncoder().encode("python.org"));
+ * uuid === "886313e1-3b8a-5372-9b90-0c9aee199e5d" // true
+ * ```
+ *
+ * @param namespace The namespace to use, encoded as a UUID.
+ * @param data The data to hash to calculate the SHA-1 digest for the UUID.
+ */ export async function generate(namespace, data) {
+    // TODO(lucacasonato): validate that `namespace` is a valid UUID.
+    const space = uuidToBytes(namespace);
+    assert(space.length === 16, "namespace must be a valid UUID");
+    const toHash = concat(new Uint8Array(space), data);
+    const buffer = await crypto.subtle.digest("sha-1", toHash);
+    const bytes = new Uint8Array(buffer);
+    bytes[6] = bytes[6] & 0x0f | 0x50;
+    bytes[8] = bytes[8] & 0x3f | 0x80;
+    return bytesToUuid(bytes);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3N0ZEAwLjE1My4wL3V1aWQvdjUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQ29weXJpZ2h0IDIwMTgtMjAyMiB0aGUgRGVubyBhdXRob3JzLiBBbGwgcmlnaHRzIHJlc2VydmVkLiBNSVQgbGljZW5zZS5cbi8vIFRoaXMgbW9kdWxlIGlzIGJyb3dzZXIgY29tcGF0aWJsZS5cblxuaW1wb3J0IHsgYnl0ZXNUb1V1aWQsIHV1aWRUb0J5dGVzIH0gZnJvbSBcIi4vX2NvbW1vbi50c1wiO1xuaW1wb3J0IHsgY29uY2F0IH0gZnJvbSBcIi4uL2J5dGVzL21vZC50c1wiO1xuaW1wb3J0IHsgYXNzZXJ0IH0gZnJvbSBcIi4uL191dGlsL2Fzc2VydC50c1wiO1xuXG5jb25zdCBVVUlEX1JFID1cbiAgL15bMC05YS1mXXs4fS1bMC05YS1mXXs0fS1bNV1bMC05YS1mXXszfS1bODlhYl1bMC05YS1mXXszfS1bMC05YS1mXXsxMn0kL2k7XG5cbi8qKlxuICogVmFsaWRhdGUgdGhhdCB0aGUgcGFzc2VkIFVVSUQgaXMgYW4gUkZDNDEyMiB2NSBVVUlELlxuICpcbiAqIGBgYHRzXG4gKiBpbXBvcnQgeyBnZW5lcmF0ZSBhcyBnZW5lcmF0ZVY1LCB2YWxpZGF0ZSB9IGZyb20gXCIuL3Y1LnRzXCI7XG4gKlxuICogdmFsaWRhdGUoYXdhaXQgZ2VuZXJhdGVWNShcIjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOFwiLCBuZXcgVWludDhBcnJheSgpKSk7IC8vIHRydWVcbiAqIHZhbGlkYXRlKGNyeXB0by5yYW5kb21VVUlEKCkpOyAvLyBmYWxzZVxuICogdmFsaWRhdGUoXCJ0aGlzLWlzLW5vdC1hLXV1aWRcIik7IC8vIGZhbHNlXG4gKiBgYGBcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIHZhbGlkYXRlKGlkOiBzdHJpbmcpOiBib29sZWFuIHtcbiAgcmV0dXJuIFVVSURfUkUudGVzdChpZCk7XG59XG5cbi8qKlxuICogR2VuZXJhdGUgYSBSRkM0MTIyIHY1IFVVSUQgKFNIQS0xIG5hbWVzcGFjZSkuXG4gKlxuICogYGBganNcbiAqIGltcG9ydCB7IGdlbmVyYXRlIH0gZnJvbSBcIi4vdjUudHNcIjtcbiAqXG4gKiBjb25zdCBOQU1FU1BBQ0VfVVJMID0gXCI2YmE3YjgxMC05ZGFkLTExZDEtODBiNC0wMGMwNGZkNDMwYzhcIjtcbiAqXG4gKiBjb25zdCB1dWlkID0gYXdhaXQgZ2VuZXJhdGUoTkFNRVNQQUNFX1VSTCwgbmV3IFRleHRFbmNvZGVyKCkuZW5jb2RlKFwicHl0aG9uLm9yZ1wiKSk7XG4gKiB1dWlkID09PSBcIjg4NjMxM2UxLTNiOGEtNTM3Mi05YjkwLTBjOWFlZTE5OWU1ZFwiIC8vIHRydWVcbiAqIGBgYFxuICpcbiAqIEBwYXJhbSBuYW1lc3BhY2UgVGhlIG5hbWVzcGFjZSB0byB1c2UsIGVuY29kZWQgYXMgYSBVVUlELlxuICogQHBhcmFtIGRhdGEgVGhlIGRhdGEgdG8gaGFzaCB0byBjYWxjdWxhdGUgdGhlIFNIQS0xIGRpZ2VzdCBmb3IgdGhlIFVVSUQuXG4gKi9cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBnZW5lcmF0ZShcbiAgbmFtZXNwYWNlOiBzdHJpbmcsXG4gIGRhdGE6IFVpbnQ4QXJyYXksXG4pOiBQcm9taXNlPHN0cmluZz4ge1xuICAvLyBUT0RPKGx1Y2FjYXNvbmF0byk6IHZhbGlkYXRlIHRoYXQgYG5hbWVzcGFjZWAgaXMgYSB2YWxpZCBVVUlELlxuXG4gIGNvbnN0IHNwYWNlID0gdXVpZFRvQnl0ZXMobmFtZXNwYWNlKTtcbiAgYXNzZXJ0KHNwYWNlLmxlbmd0aCA9PT0gMTYsIFwibmFtZXNwYWNlIG11c3QgYmUgYSB2YWxpZCBVVUlEXCIpO1xuXG4gIGNvbnN0IHRvSGFzaCA9IGNvbmNhdChuZXcgVWludDhBcnJheShzcGFjZSksIGRhdGEpO1xuICBjb25zdCBidWZmZXIgPSBhd2FpdCBjcnlwdG8uc3VidGxlLmRpZ2VzdChcInNoYS0xXCIsIHRvSGFzaCk7XG4gIGNvbnN0IGJ5dGVzID0gbmV3IFVpbnQ4QXJyYXkoYnVmZmVyKTtcblxuICBieXRlc1s2XSA9IChieXRlc1s2XSAmIDB4MGYpIHwgMHg1MDtcbiAgYnl0ZXNbOF0gPSAoYnl0ZXNbOF0gJiAweDNmKSB8IDB4ODA7XG5cbiAgcmV0dXJuIGJ5dGVzVG9VdWlkKGJ5dGVzKTtcbn1cbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSwwRUFBMEU7QUFDMUUscUNBQXFDO0FBRXJDLFNBQVMsV0FBVyxFQUFFLFdBQVcsUUFBUSxjQUFjLENBQUM7QUFDeEQsU0FBUyxNQUFNLFFBQVEsaUJBQWlCLENBQUM7QUFDekMsU0FBUyxNQUFNLFFBQVEsb0JBQW9CLENBQUM7QUFFNUMsTUFBTSxPQUFPLDZFQUMrRCxBQUFDO0FBRTdFOzs7Ozs7Ozs7O0NBVUMsR0FDRCxPQUFPLFNBQVMsUUFBUSxDQUFDLEVBQVUsRUFBVztJQUM1QyxPQUFPLE9BQU8sQ0FBQyxJQUFJLENBQUMsRUFBRSxDQUFDLENBQUM7QUFDMUIsQ0FBQztBQUVEOzs7Ozs7Ozs7Ozs7OztDQWNDLEdBQ0QsT0FBTyxlQUFlLFFBQVEsQ0FDNUIsU0FBaUIsRUFDakIsSUFBZ0IsRUFDQztJQUNqQixpRUFBaUU7SUFFakUsTUFBTSxLQUFLLEdBQUcsV0FBVyxDQUFDLFNBQVMsQ0FBQyxBQUFDO0lBQ3JDLE1BQU0sQ0FBQyxLQUFLLENBQUMsTUFBTSxLQUFLLEVBQUUsRUFBRSxnQ0FBZ0MsQ0FBQyxDQUFDO0lBRTlELE1BQU0sTUFBTSxHQUFHLE1BQU0sQ0FBQyxJQUFJLFVBQVUsQ0FBQyxLQUFLLENBQUMsRUFBRSxJQUFJLENBQUMsQUFBQztJQUNuRCxNQUFNLE1BQU0sR0FBRyxNQUFNLE1BQU0sQ0FBQyxNQUFNLENBQUMsTUFBTSxDQUFDLE9BQU8sRUFBRSxNQUFNLENBQUMsQUFBQztJQUMzRCxNQUFNLEtBQUssR0FBRyxJQUFJLFVBQVUsQ0FBQyxNQUFNLENBQUMsQUFBQztJQUVyQyxLQUFLLENBQUMsQ0FBQyxDQUFDLEdBQUcsQUFBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLEdBQUcsSUFBSSxHQUFJLElBQUksQ0FBQztJQUNwQyxLQUFLLENBQUMsQ0FBQyxDQUFDLEdBQUcsQUFBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLEdBQUcsSUFBSSxHQUFJLElBQUksQ0FBQztJQUVwQyxPQUFPLFdBQVcsQ0FBQyxLQUFLLENBQUMsQ0FBQztBQUM1QixDQUFDIn0=

@@ -2,4 +2,8 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - Cleaning_Data.ipynb
+      - 00_Collecting_Data.ipynb
+      - 01_Cleaning_Data.ipynb
+      - 02_Training_Model.ipynb
+      - 03_Evaluating_Model.ipynb
+      - 04_Analyzing_Results.ipynb

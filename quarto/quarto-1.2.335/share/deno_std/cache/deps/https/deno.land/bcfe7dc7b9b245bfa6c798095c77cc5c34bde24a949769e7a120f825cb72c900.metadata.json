@@ -1,0 +1,26 @@
+{
+  "headers": {
+    "access-control-allow-origin": "*",
+    "last-modified": "Wed, 24 Aug 2022 21:03:17 GMT",
+    "vary": "Accept-Encoding, Origin",
+    "cache-control": "public, max-age=31536000, immutable",
+    "server": "deno/gcp-us-east4",
+    "date": "Tue, 31 Jan 2023 14:48:33 GMT",
+    "x-amz-replication-status": "COMPLETED",
+    "content-length": "1055",
+    "content-type": "application/typescript; charset=utf-8",
+    "etag": "\"fd474eb29da2520125b9b6e0fcde0f59\"",
+    "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+    "x-amz-cf-pop": "BOS50-C2",
+    "x-cache": "Miss from cloudfront",
+    "x-amz-cf-id": "QLkNRiDqQjAdN0PpMVkCObAVjaFylDdfne4hRX9LtE2xmua2gTk3Lw==",
+    "x-amz-version-id": "RJVOfpIH_h4GfpEtuwy037UxGsm_YSoh",
+    "accept-ranges": "bytes",
+    "via": "http/2 edgeproxy-h"
+  },
+  "url": "https://deno.land/std@0.153.0/collections/intersect.ts",
+  "now": {
+    "secs_since_epoch": 1675176512,
+    "nanos_since_epoch": 883174366
+  }
+}
