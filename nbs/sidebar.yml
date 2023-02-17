@@ -4,6 +4,7 @@ website:
       - index.ipynb
       - 00_Collecting_Data.ipynb
       - 01_Cleaning_Data.ipynb
-      - 02_Training_Model.ipynb
+      - 02_Data_Analysis.ipynb
       - 03_Evaluating_Model.ipynb
       - 04_Analyzing_Results.ipynb
+      - 05_Training_Model.ipynb
