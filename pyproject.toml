@@ -16,6 +16,11 @@ dependencies = [
     "sklearn>=0.0.post1",
     "matplotlib>=3.6.3",
     "quarto>=0.1.0",
+    "transformers>=4.26.1",
+    "datasets>=2.9.0",
+    "keras==2.6.*",
+    "torch>=1.13.1",
+    "torchtext>=0.14.1",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
