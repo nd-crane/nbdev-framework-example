@@ -441,6 +441,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "evaluate"
+version = "0.4.0"
+requires_python = ">=3.7.0"
+summary = "HuggingFace community-driven open-source library of evaluation"
+dependencies = [
+    "datasets>=2.0.0",
+    "dill",
+    "fsspec[http]>=2021.05.0",
+    "huggingface-hub>=0.7.0",
+    "multiprocess",
+    "numpy>=1.17",
+    "packaging",
+    "pandas",
+    "requests>=2.19.0",
+    "responses<0.19",
+    "tqdm>=4.62.1",
+    "xxhash",
+]
+
+[[package]]
 name = "execnb"
 version = "0.1.5"
 requires_python = ">=3.7"
@@ -1387,7 +1407,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:0c1ae3390246ff6afb65a23838a5659d74207030f8b6851aae6f10b7d5c7a355"
+content_hash = "sha256:22f31101de92fd9d59bd496bef3b85a41dc1bb6758a7f829a84d9dcb865702ec"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1948,6 +1968,10 @@ content_hash = "sha256:0c1ae3390246ff6afb65a23838a5659d74207030f8b6851aae6f10b7d
 "dvclive 2.1.0" = [
     {url = "https://files.pythonhosted.org/packages/2b/d6/1415765d0604f4f176eb5b22666cf74c8ec11a82a94d5bbf2afb318fc6c9/dvclive-2.1.0-py3-none-any.whl", hash = "sha256:1a2644f37a5b5ee3c9dbf7ef66bfe55be8b40d08a137e7d6a7d3fb9dd5b88b9d"},
     {url = "https://files.pythonhosted.org/packages/d9/f6/61037734cd47c3db6c654ff08600740f9690ebdac16e56d0c8a68bfecdcc/dvclive-2.1.0.tar.gz", hash = "sha256:99c64f3de61e1b05b5b17204ab0a9d88b61c77911474438d4ecad8b776b29d1d"},
+]
+"evaluate 0.4.0" = [
+    {url = "https://files.pythonhosted.org/packages/0f/33/969f10bc16e294747a964662f0067c226b08664e963c12db21beb0fd5df3/evaluate-0.4.0-py3-none-any.whl", hash = "sha256:4b528de0f270cdfb077ca4877035dc17584d2c4b1cbc3fdd46afc3942ed557fd"},
+    {url = "https://files.pythonhosted.org/packages/d8/16/63110013b278a3368363d5013ac88a37fa6fe1e24eb5c0fd7836fc9554bf/evaluate-0.4.0.tar.gz", hash = "sha256:bd6a59879be9ae13b681684e56ae3e6ea657073c4413b30335e9efa9856e4f44"},
 ]
 "execnb 0.1.5" = [
     {url = "https://files.pythonhosted.org/packages/2d/f5/5621e35bc692514db44aea307b5c2e41ac0cd1193b4251c5584e1f6fe6ce/execnb-0.1.5.tar.gz", hash = "sha256:9ee029e0e3007c0deedc32723918c5c3bcbb64bb0b08a11fc521485ea361fa4d"},
