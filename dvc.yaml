@@ -1,0 +1,49 @@
+stages:
+  collecting:
+    cmd: jupyter nbconvert --to python --execute nbs/00_Collecting_Data.ipynb --output ../scripts/00_Collecting_Data
+    deps:
+    - pdm.lock
+    - pyproject.toml
+    - nbs/00_Collecting_Data.ipynb
+    - data/raw-data
+    outs:
+    - scripts/00_Collecting_Data.py
+    - data/working-data/Concatenated_Orig_data.csv
+  cleaning:
+      cmd: jupyter nbconvert --to python --execute nbs/01_Cleaning_Data.ipynb --output ../scripts/01_Cleaning_Data
+      deps:
+      - pdm.lock
+      - pyproject.toml
+      - nbs/01_Cleaning_Data.ipynb
+      - data/working-data/Concatenated_Orig_data.csv
+      - data/raw-data/AIDCODE.csv
+      outs:
+      - scripts/01_Cleaning_Data.py
+      - data/cleaned-data/Concatenated_Clean_data.csv
+  nn-preprocess:
+      cmd: jupyter nbconvert --to python --execute nbs/02a_NN_Preprocessing.ipynb --output ../scripts/02a_NN_Preprocessing
+      deps:
+      - pdm.lock
+      - pyproject.toml
+      - nbs/02a_NN_Preprocessing.ipynb
+      - data/cleaned-data/Concatenated_Clean_data.csv
+      outs:
+      - scripts/02a_NN_Preprocessing.py
+      - data/processed-data/nn/train/FAA-1.csv
+      - data/processed-data/nn/test/FAA-1.csv
+      - data/processed-data/nn/val/FAA-1.csv
+      - data/processed-data/nn/actual/FAA-1.csv
+  nn-training:
+      cmd: jupyter nbconvert --to python --execute nbs/03a_Training_Model.ipynb --output ../scripts/03a_Training_Model
+      deps:
+      - pdm.lock
+      - pyproject.toml
+      - nbs/03a_Training_Model.ipynb
+      - data/processed-data/nn/train/FAA-1.csv
+      - data/processed-data/nn/test/FAA-1.csv
+      - data/processed-data/nn/val/FAA-1.csv
+      outs:
+      - output/model/
+      - scripts/03a_Training_Model.py
+  classification-preprocess:
+      cmd: jupyter nbconvert --to python --execute nbs/02_Classification_Preprocessing.ipynb --output ../scripts/02_Classification_Preprocessing
