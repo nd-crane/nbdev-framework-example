@@ -152,5 +152,4 @@ checklink/cookies.txt
 
 quarto/
 data/
-output/runs/
-output/model/
+output/
