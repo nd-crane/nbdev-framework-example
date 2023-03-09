@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>nbdev-framework-example - Classification Preprocessing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="nbdev-framework-example - Classification Preprocessing">
+<meta property="og:description" content="We can now focus on the features of interest">
+<meta property="og:site-name" content="nbdev-framework-example">
+<meta name="twitter:title" content="nbdev-framework-example - Classification Preprocessing">
+<meta name="twitter:description" content="We can now focus on the features of interest">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">nbdev-framework-example</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Classification Preprocessing</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">nbdev-framework-example</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collecting_data.html" class="sidebar-item-text sidebar-link">Data Collection</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cleaning_data.html" class="sidebar-item-text sidebar-link">Cleaning Data</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nn_preprocessing.html" class="sidebar-item-text sidebar-link">Neural Net Preprocessing</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classification_preprocessing.html" class="sidebar-item-text sidebar-link active">Classification Preprocessing</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./training_model.html" class="sidebar-item-text sidebar-link">Training Model</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classification_modeling.html" class="sidebar-item-text sidebar-link">Classification Modeling</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./evaluating_model.html" class="sidebar-item-text sidebar-link">Evaluating Model</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link">Example</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#preliminary-analysis" id="toc-preliminary-analysis" class="nav-link active" data-scroll-target="#preliminary-analysis">Preliminary Analysis</a></li>
+  <li><a href="#stratifying-the-data" id="toc-stratifying-the-data" class="nav-link" data-scroll-target="#stratifying-the-data">Stratifying the Data</a>
+  <ul class="collapse">
+  <li><a href="#feature-selection" id="toc-feature-selection" class="nav-link" data-scroll-target="#feature-selection">Feature Selection</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/nd-crane/nbdev-framework-example/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Classification Preprocessing</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="preliminary-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="preliminary-analysis">Preliminary Analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'../data/cleaned-data/Concatenated_Clean_data.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_560384/2868801960.py:1: DtypeWarning: Columns (5,6,11,15,16,17,18,19,27,29,30,33,34,35,36,43,45,48,49,50,51,52,58,59,60,61,62,63,69,70,71,72,73,74,75,76,77,78,79,82,83,117,118,122,123,127,131,135,136,142,155,158,167,168,172,173,175,176) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv('../data/cleaned-data/Concatenated_Clean_data.csv')</code></pre>
+</div>
+</div>
+<p>We can now focus on the features of interest</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>list1 <span class="op">=</span> df.columns.tolist()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>list2 <span class="op">=</span> [<span class="st">'c109'</span>,<span class="st">'c52'</span>,<span class="st">'c53'</span>,<span class="st">'c56'</span>,<span class="st">'c50'</span>,<span class="st">'c144'</span>,<span class="st">'c24'</span>,<span class="st">'c23'</span>,<span class="st">'c25'</span>,<span class="st">'c78'</span>,<span class="st">'c27'</span>,<span class="st">'c13'</span>,<span class="st">'c102'</span>,<span class="st">'c106'</span>,<span class="st">'c41'</span>,<span class="st">'c49'</span>,<span class="st">'c59'</span>,<span class="st">'c80'</span>,<span class="st">'c96'</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>set_dif <span class="op">=</span> <span class="bu">set</span>(list1).symmetric_difference(<span class="bu">set</span>(list2))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>temp3 <span class="op">=</span> <span class="bu">list</span>(set_dif)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>temp3, inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>c144</th>
+      <th>c23</th>
+      <th>c24</th>
+      <th>c25</th>
+      <th>c27</th>
+      <th>c13</th>
+      <th>c102</th>
+      <th>c106</th>
+      <th>c41</th>
+      <th>c49</th>
+      <th>c50</th>
+      <th>c52</th>
+      <th>c53</th>
+      <th>c56</th>
+      <th>c59</th>
+      <th>c78</th>
+      <th>c80</th>
+      <th>c96</th>
+      <th>c109</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1L71</td>
+      <td>GRUMAV</td>
+      <td>AA1A</td>
+      <td>AA1</td>
+      <td>SO</td>
+      <td>MO</td>
+      <td>1</td>
+      <td>B</td>
+      <td>3</td>
+      <td>E</td>
+      <td>22.0</td>
+      <td>K</td>
+      <td>101.0</td>
+      <td>1187.0</td>
+      <td>MO</td>
+      <td>PL</td>
+      <td>C</td>
+      <td>IB</td>
+      <td>Dusk</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1H71</td>
+      <td>CESSNA</td>
+      <td>182C</td>
+      <td>182</td>
+      <td>CE</td>
+      <td>IL</td>
+      <td>1</td>
+      <td>B</td>
+      <td>3</td>
+      <td>G</td>
+      <td>22.0</td>
+      <td>B</td>
+      <td>124.0</td>
+      <td>364.0</td>
+      <td>IL</td>
+      <td>PF</td>
+      <td>E</td>
+      <td>DD</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1H71</td>
+      <td>CESSNA</td>
+      <td>150</td>
+      <td>150</td>
+      <td>CE</td>
+      <td>TN</td>
+      <td>8</td>
+      <td>B</td>
+      <td>1</td>
+      <td>G</td>
+      <td>34.0</td>
+      <td>N</td>
+      <td>202.0</td>
+      <td>205.0</td>
+      <td>CA</td>
+      <td>PF</td>
+      <td>E</td>
+      <td>DD</td>
+      <td>Dawn</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1H71</td>
+      <td>CESSNA</td>
+      <td>172M</td>
+      <td>172</td>
+      <td>CE</td>
+      <td>IN</td>
+      <td>1</td>
+      <td>B</td>
+      <td>1</td>
+      <td>G</td>
+      <td>37.0</td>
+      <td>P</td>
+      <td>77.0</td>
+      <td>95.0</td>
+      <td>IN</td>
+      <td>GC</td>
+      <td>V</td>
+      <td>HB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1H71</td>
+      <td>CESSNA</td>
+      <td>177B</td>
+      <td>177</td>
+      <td>CE</td>
+      <td>OR</td>
+      <td>2</td>
+      <td>B</td>
+      <td>3</td>
+      <td>G</td>
+      <td>29.0</td>
+      <td>N</td>
+      <td>1.0</td>
+      <td>233.0</td>
+      <td>OR</td>
+      <td>SN</td>
+      <td>V</td>
+      <td>IA</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>113937</th>
+      <td>2L72</td>
+      <td>BOEING</td>
+      <td>7373H4</td>
+      <td>737</td>
+      <td>NM</td>
+      <td>CA</td>
+      <td>C</td>
+      <td>B</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>BS</td>
+      <td>V</td>
+      <td>IB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>113938</th>
+      <td>1K71</td>
+      <td>VALENT</td>
+      <td>TAIFUN17E</td>
+      <td>17</td>
+      <td>EU</td>
+      <td>NM</td>
+      <td>1</td>
+      <td>B</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>71.0</td>
+      <td>O</td>
+      <td>55.0</td>
+      <td>300.0</td>
+      <td>NaN</td>
+      <td>AS</td>
+      <td>Y</td>
+      <td>IB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>113939</th>
+      <td>2G72</td>
+      <td>BOEING</td>
+      <td>234</td>
+      <td>234</td>
+      <td>EA</td>
+      <td>OR</td>
+      <td>7</td>
+      <td>C</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>48.0</td>
+      <td>O</td>
+      <td>7000.0</td>
+      <td>18000.0</td>
+      <td>MT</td>
+      <td>HO</td>
+      <td>V</td>
+      <td>FB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>113940</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OH</td>
+      <td>1</td>
+      <td>B</td>
+      <td>TT</td>
+      <td>R</td>
+      <td>NaN</td>
+      <td>O</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>TC</td>
+      <td>V</td>
+      <td>DF</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>113941</th>
+      <td>1L71</td>
+      <td>AMTR</td>
+      <td>THORPT18</td>
+      <td>T18</td>
+      <td>GL</td>
+      <td>WA</td>
+      <td>1</td>
+      <td>B</td>
+      <td>3</td>
+      <td>N</td>
+      <td>82.0</td>
+      <td>O</td>
+      <td>1050.0</td>
+      <td>3500.0</td>
+      <td>WA</td>
+      <td>GC</td>
+      <td>V</td>
+      <td>HB</td>
+      <td>Day</td>
+    </tr>
+  </tbody>
+</table>
+<p>113942 rows × 19 columns</p>
+</div>
+</div>
+</div>
+<p>Let’s look at the percentage of null values in each column grouped into bins with width 10%</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>na_count <span class="op">=</span> df.isna().<span class="bu">sum</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>shape <span class="op">=</span> df.shape[<span class="dv">0</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(shape)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(df.columns))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> shape</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>acceptable_pct_100 <span class="op">=</span> total</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>acceptable_pct_90 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.9</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>acceptable_pct_80 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.8</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>acceptable_pct_70 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.7</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>acceptable_pct_60 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.6</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>acceptable_pct_50 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.5</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>acceptable_pct_40 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.4</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>acceptable_pct_30 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.3</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>acceptable_pct_20 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.2</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>acceptable_pct_10 <span class="op">=</span> total <span class="op">*</span> <span class="fl">.1</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>acceptable_pct_0 <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>acceptable_columns <span class="op">=</span> {</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'100'</span>: [],</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'90'</span>: [],</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'80'</span>: [],</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'70'</span>: [],</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'60'</span>: [],</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'50'</span>: [],</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'40'</span>: [],</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'30'</span>: [],</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'20'</span>: [],</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'10'</span>: [],</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'0'</span>: [],</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">'full'</span>: []</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> column <span class="kw">in</span> df.columns:</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    column_counts <span class="op">=</span> df[column].value_counts()</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    na_count <span class="op">=</span> df[column].isna().<span class="bu">sum</span>()</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    na_series <span class="op">=</span> pd.Series([na_count], index<span class="op">=</span>[<span class="st">'NaN'</span>])  </span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    column_counts <span class="op">=</span> pd.concat([column_counts, na_series], axis<span class="op">=</span><span class="dv">0</span>, join<span class="op">=</span><span class="st">'outer'</span>) </span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> na_count <span class="op">==</span> acceptable_pct_100:</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'100'</span>].append(column)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_90:</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'90'</span>].append(column)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(column)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_80:</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'80'</span>].append(column)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_70:</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'70'</span>].append(column)</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_60:</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'60'</span>].append(column)</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_50:</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'50'</span>].append(column)</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_40:</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'40'</span>].append(column)</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_30:</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'30'</span>].append(column)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_20:</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'20'</span>].append(column)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_10:</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'10'</span>].append(column)</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">&gt;</span> acceptable_pct_0:</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'0'</span>].append(column)</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> na_count <span class="op">==</span> acceptable_pct_0:</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        acceptable_columns[<span class="st">'full'</span>].append(column)</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="co">#print(df.describe())</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="co">#print(len(acceptable_columns), acceptable_columns)</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>total_columns_in_dict <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, value <span class="kw">in</span> acceptable_columns.items():</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(key,<span class="st">' : '</span>,<span class="bu">len</span>(value))</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    total_columns_in_dict <span class="op">+=</span> <span class="bu">len</span>(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>113942
+19
+100  :  0
+90  :  0
+80  :  0
+70  :  0
+60  :  0
+50  :  0
+40  :  0
+30  :  0
+20  :  0
+10  :  0
+0  :  18
+full  :  1</code></pre>
+</div>
+</div>
+<p>We can now save the dataframe to a csv, called <code>19_features.csv</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">'../data/cleaned-data/19_features.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="stratifying-the-data" class="level1">
+<h1>Stratifying the Data</h1>
+<p>Now, let’s get a better sense of the target column <code>c78</code>. Specifcally, we’d like to know how many instances there are of each label, and limit ourselves to only the most frequent labels to reduce numerosity.</p>
+<p>Let’s take a stratified random sample of observations to reduce numerosity while maintainig the reletaive frequency of <code>c78</code> labels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> <span class="fl">.2</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#perform stratified random sampling</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df.groupby(<span class="st">'c78'</span>, group_keys<span class="op">=</span><span class="va">False</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.sample(<span class="bu">int</span>(np.rint(N<span class="op">*</span><span class="bu">len</span>(x)<span class="op">/</span><span class="bu">len</span>(df))))).sample(frac<span class="op">=</span><span class="dv">1</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df2[<span class="st">'c78'</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>GC    2820
+LO    1802
+HO    1766
+GN    1217
+AS    1160
+      ... 
+RC       1
+DP       1
+MC       1
+NO       1
+OF       1
+Name: c78, Length: 111, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df2.shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>22789</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df2[<span class="st">'c78'</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array(['HO', 'SO', 'GN', 'OS', 'MA', 'FA', 'HG', 'GI', 'UO', 'OM', 'CH',
+       'SD', 'GC', 'LO', 'AS', 'GA', 'PW', 'FP', 'GL', 'PI', 'IP', 'PL',
+       'TC', 'FX', 'FT', 'AW', 'XL', 'II', 'ME', 'UT', 'PB', 'ES', 'OC',
+       'DR', 'UA', 'IO', 'FO', 'UN', 'BW', 'LA', 'SN', 'PF', 'IA', 'DW',
+       'RS', 'ST', 'UD', 'LC', 'GF', 'US', 'DC', 'HA', 'MM', 'BS', 'DE',
+       'PS', 'IS', 'AA', 'TO', 'MO', 'WS', 'SP', 'PC', 'PD', 'PA', 'AI',
+       'PP', 'GP', 'CE', 'LR', 'EL', 'SR', 'GE', 'AU', 'MI', 'TP', 'TX',
+       'VM', 'WX', 'FC', 'WO', 'IE', 'CI', 'IT', 'PO', 'MT', 'FR', 'SC',
+       'AF', 'IC', 'FW', 'SA', 'OB', 'AL', 'HT', 'FN', 'CP', 'AT', 'IG',
+       'OP', 'WR', 'EQ', 'WF', 'OT', 'RV', 'RI', 'RC', 'DP', 'MC', 'NO',
+       'OF'], dtype=object)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>top_labels <span class="op">=</span> df2[<span class="st">'c78'</span>].value_counts()[:<span class="dv">50</span>].index.tolist()</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span>df2[df2[<span class="st">'c78'</span>].isin(top_labels)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df2.shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>21264</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>strat_df <span class="op">=</span> df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="feature-selection" class="level2">
+<h2 class="anchored" data-anchor-id="feature-selection">Feature Selection</h2>
+<p>We see that some of the features are categorical</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>strat_df</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>c144</th>
+      <th>c23</th>
+      <th>c24</th>
+      <th>c25</th>
+      <th>c27</th>
+      <th>c13</th>
+      <th>c102</th>
+      <th>c106</th>
+      <th>c41</th>
+      <th>c49</th>
+      <th>c50</th>
+      <th>c52</th>
+      <th>c53</th>
+      <th>c56</th>
+      <th>c59</th>
+      <th>c78</th>
+      <th>c80</th>
+      <th>c96</th>
+      <th>c109</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2L72</td>
+      <td>LEAR</td>
+      <td>35A</td>
+      <td>35</td>
+      <td>CE</td>
+      <td>MA</td>
+      <td>3</td>
+      <td>B</td>
+      <td>9</td>
+      <td>S</td>
+      <td>53.0</td>
+      <td>K</td>
+      <td>2000.0</td>
+      <td>17000.0</td>
+      <td>MA</td>
+      <td>HO</td>
+      <td>V</td>
+      <td>HB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1H71</td>
+      <td>CESSNA</td>
+      <td>182C</td>
+      <td>182</td>
+      <td>CE</td>
+      <td>CA</td>
+      <td>8</td>
+      <td>C</td>
+      <td>1</td>
+      <td>S</td>
+      <td>23.0</td>
+      <td>O</td>
+      <td>10.0</td>
+      <td>90.0</td>
+      <td>AZ</td>
+      <td>SO</td>
+      <td>V</td>
+      <td>AA</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1L71</td>
+      <td>AMTR</td>
+      <td>GLASAIR</td>
+      <td>GLASAR</td>
+      <td>GL</td>
+      <td>CA</td>
+      <td>1</td>
+      <td>B</td>
+      <td>1</td>
+      <td>S</td>
+      <td>42.0</td>
+      <td>O</td>
+      <td>25.0</td>
+      <td>1200.0</td>
+      <td>CA</td>
+      <td>GN</td>
+      <td>V</td>
+      <td>HA</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1L72</td>
+      <td>PIPER</td>
+      <td>PA34200T</td>
+      <td>PA34</td>
+      <td>SO</td>
+      <td>MN</td>
+      <td>1</td>
+      <td>B</td>
+      <td>1</td>
+      <td>S</td>
+      <td>39.0</td>
+      <td>O</td>
+      <td>30.0</td>
+      <td>300.0</td>
+      <td>NaN</td>
+      <td>OS</td>
+      <td>V</td>
+      <td>HB</td>
+      <td>Day</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1L71</td>
+      <td>BEECH</td>
+      <td>S35</td>
+      <td>35</td>
+      <td>CE</td>
+      <td>OH</td>
+      <td>1</td>
+      <td>B</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>58.0</td>
+      <td>O</td>
+      <td>2000.0</td>
+      <td>4300.0</td>
+      <td>NaN</td>
+      <td>GN</td>
+      <td>V</td>
+      <td>HA</td>
+      <td>Day</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>c144     object
+c23      object
+c24      object
+c25      object
+c27      object
+c13      object
+c102     object
+c106     object
+c41      object
+c49      object
+c50     float64
+c52      object
+c53     float64
+c56     float64
+c59      object
+c78      object
+c80      object
+c96      object
+c109     object
+dtype: object</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>bin_cols <span class="op">=</span> [<span class="st">'c50'</span>, <span class="st">'c53'</span>, <span class="st">'c56'</span>]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> bin_cols:</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    df[col] <span class="op">=</span> pd.qcut(df[col], q <span class="op">=</span> <span class="dv">10</span>, labels <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)])</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>df[bin_cols]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>c50</th>
+      <th>c53</th>
+      <th>c56</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7</td>
+      <td>9</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8</td>
+      <td>9</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>22783</th>
+      <td>4</td>
+      <td>8</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>22784</th>
+      <td>6</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22785</th>
+      <td>4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22786</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22788</th>
+      <td>8</td>
+      <td>6</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>21264 rows × 3 columns</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.astype({<span class="st">'c50'</span>: <span class="bu">object</span>, <span class="st">'c53'</span>: <span class="bu">object</span>, <span class="st">'c56'</span>: <span class="bu">object</span>})</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>c144    object
+c23     object
+c24     object
+c25     object
+c27     object
+c13     object
+c102    object
+c106    object
+c41     object
+c49     object
+c50     object
+c52     object
+c53     object
+c56     object
+c59     object
+c78     object
+c80     object
+c96     object
+c109    object
+dtype: object</code></pre>
+</div>
+</div>
+<p>Let’s one-hot encode the categorical variables</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> LabelEncoder</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiate labelencoder object</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>le <span class="op">=</span> LabelEncoder()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># apply le on categorical feature columns</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'c78'</span>] <span class="op">=</span> le.fit_transform(df[<span class="st">'c78'</span>])</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>categorical_cols <span class="op">=</span> df.columns.to_list()</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>categorical_cols.remove(<span class="st">'c78'</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#One-hot-encode the categorical columns.</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>one_hot <span class="op">=</span> pd.get_dummies(df[categorical_cols])</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Concatenate the two dataframes : </span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([one_hot, df[<span class="st">'c78'</span>]], axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/opt/anaconda3/lib/python3.9/site-packages/pandas/core/algorithms.py:798: FutureWarning: In a future version, the Index constructor will not infer numeric dtypes when passed object-dtype sequences (matching Series behavior)
+  uniques = Index(uniques)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>c144_1B0</th>
+      <th>c144_1B00</th>
+      <th>c144_1B71</th>
+      <th>c144_1B72</th>
+      <th>c144_1D71</th>
+      <th>c144_1G00</th>
+      <th>c144_1G71</th>
+      <th>c144_1G72</th>
+      <th>c144_1H71</th>
+      <th>c144_1H72</th>
+      <th>...</th>
+      <th>c96_KG</th>
+      <th>c96_PJ</th>
+      <th>c96_PL</th>
+      <th>c96_SR</th>
+      <th>c109_Dawn</th>
+      <th>c109_Day</th>
+      <th>c109_Dusk</th>
+      <th>c109_Night</th>
+      <th>c109_Unknown</th>
+      <th>c78</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>14</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 3958 columns</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">'../data/cleaned-data/Encoded_Features.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
