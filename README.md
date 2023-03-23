@@ -5,6 +5,34 @@ nbdev-framework-example
 
 ## Getting Started
 
+### Conda
+
+We will be using PDM’s PEP-582 **pypackages** for dependency management.
+One shortcoming of this approach is difficulties arising from packages
+relying on Cython files and C extentsions. To combat this issue, we will
+first create a conda environment from the `env.yml` file and then setup
+PDM using our environment as the interpreter.
+
+#### Installation
+
+Conda should be installed as described in the [Installation
+instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
+
+#### Environment Creation
+
+To create the environment run the following command
+
+``` bash
+conda env create -f env.yml
+```
+
+We can now activate it and create an iPython kernel
+
+``` bash
+conda activate ./envs
+python -m ipykernel install --user --name myenv --display-name "FAA"
+```
+
 ### PDM
 
 > PDM, as described, is a modern Python package and dependency manager
@@ -25,7 +53,8 @@ instructions](https://pdm.fming.dev/latest/#recommended-installation-method).
 Once PDM is installed and configured, the project should be initialized
 by running the following command. This will ask a series of questions,
 where the defaults are usually safe, and produce a file called
-`pyproject.toml`.
+`pyproject.toml`. Ensure while answering the prompts that the conda
+environment is selected as the interpreter.
 
 ``` bash
 pdm init
