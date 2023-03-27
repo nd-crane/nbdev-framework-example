@@ -1,19 +1,16 @@
-[tool.pdm]
-
 [project]
-name = "nbdev-framework-example"
-version = "0.1.0"
-description = "An example of wrapping Lindsey Michie's FAA data science project in best practices developed by the frameworks team, including nbdev"
+name = ""
+version = ""
+description = ""
 authors = [
-    {name = "", email = ""},
+    {name = "Peter Ainsworth", email = "painswor@nd.edu"},
 ]
 dependencies = [
-    "dvc>=2.44.0",
+    "dvc>=2.51.0",
     "nbdev>=2.3.12",
     "pandas>=1.5.3",
     "numpy>=1.24.2",
     "nltk>=3.8.1",
-    "sklearn>=0.0.post1",
     "matplotlib>=3.6.3",
     "quarto>=0.1.0",
     "transformers>=4.26.1",
@@ -28,9 +25,10 @@ dependencies = [
     "plotly>=5.13.1",
 ]
 requires-python = ">=3.9"
-readme = "README.md"
 license = {text = "MIT"}
 
+[tool.pdm]
+
 [build-system]
-requires = ["pdm-pep517>=1.0"]
+requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"

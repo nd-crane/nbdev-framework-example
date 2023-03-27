@@ -1,3 +1,2 @@
 [python]
-use_venv = false
-path = "/afs/crc.nd.edu/user/p/painswor/anaconda3/bin/python"
+path = "/afs/crc.nd.edu/user/p/painswor/anaconda3/envs/framework-example/bin/python"
