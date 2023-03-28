@@ -1,0 +1,5 @@
+exp:
+  tokenizer: bert-base-cased
+  learning_rate: 5e-05
+  batch_size: 8
+  epochs: 2

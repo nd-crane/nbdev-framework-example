@@ -61,3 +61,30 @@ stages:
     - data/cleaned-data/19_features.csv
     - data/cleaned-data/Encoded_Features.csv
     - scripts/02b_Classification_Preprocessing.py
+  exp:
+    cmd: >
+        papermill 
+        nbs/exp.ipynb 
+        scripts/exp.ipynb
+        -p TOKENIZER ${exp.tokenizer}
+        -p LEARNING_RATE ${exp.learning_rate}
+        -p BATCH_SIZE ${exp.batch_size}
+        -p EPOCHS ${exp.epochs}
+    deps:
+    - nbs/exp.ipynb
+    - Text_label_data_c119.csv
+    - pdm.lock
+    - pyproject.toml
+    outs:
+    - training/plots:
+        persist: true
+    metrics:
+    - training/metrics.json:
+        persist: true
+        cache: false
+plots:
+  - Confusion matrix:
+      template: confusion
+      x: actual
+      y:
+        training/plots/sklearn/confusion_matrix.json: predicted

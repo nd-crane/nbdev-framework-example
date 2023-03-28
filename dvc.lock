@@ -12,11 +12,11 @@ stages:
       md5: b3baccae56d93a40946f32bc9526d3e2
       size: 7382
     - path: pdm.lock
-      md5: e4b183bd55071ffa4a5729b5f35b7474
-      size: 514199
+      md5: d8ef1e7306a96903c411c58ae410abd5
+      size: 528467
     - path: pyproject.toml
-      md5: da79de29e64ea326681e721ec816fda6
-      size: 821
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
     outs:
     - path: data/working-data/Concatenated_Orig_data.csv
       md5: 06d462084a283c2ca352c6cb453791e2
@@ -140,3 +140,27 @@ stages:
     - path: scripts/03a_Training_Model.py
       md5: b40020ab86232c85af774d8d6b41f2d6
       size: 2905
+  exp:
+    cmd: "papermill  nbs/exp.ipynb  scripts/exp.ipynb -p TOKENIZER bert-base-cased\
+      \ -p LEARNING_RATE 5e-05 -p BATCH_SIZE 8 -p EPOCHS 2\n"
+    deps:
+    - path: Text_label_data_c119.csv
+      md5: c03a5a44891c28b1bd3a654cf3e68062
+      size: 307770
+    - path: nbs/exp.ipynb
+      md5: 0836d35adcae34f213e1aeae1574f21b
+      size: 47481
+    - path: pdm.lock
+      md5: d8ef1e7306a96903c411c58ae410abd5
+      size: 528467
+    - path: pyproject.toml
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
+    outs:
+    - path: training/metrics.json
+      md5: e7e365d881649f06d1d3ac175b72539a
+      size: 427
+    - path: training/plots
+      md5: 08aa7273a4441e4968bd275aa7d23cab.dir
+      size: 27263
+      nfiles: 13
