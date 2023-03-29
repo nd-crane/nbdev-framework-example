@@ -14,10 +14,10 @@ stages:
     - pdm.lock
     - pyproject.toml
     outs:
-    - training/plots:
+    - eval/plots/sklearn/:
         persist: true
     metrics:
-    - training/metrics.json:
+    - eval/metrics.json:
         persist: true
         cache: false
 plots:
@@ -25,4 +25,4 @@ plots:
       template: confusion
       x: actual
       y:
-        training/plots/sklearn/confusion_matrix.json: predicted
+        eval/plots/sklearn/confusion_matrix.json: predicted

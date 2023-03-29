@@ -148,19 +148,19 @@ stages:
       md5: c03a5a44891c28b1bd3a654cf3e68062
       size: 307770
     - path: nbs/exp.ipynb
-      md5: 0836d35adcae34f213e1aeae1574f21b
-      size: 47481
+      md5: eefd77142b93fe2cefe9637f94ec55ad
+      size: 50389
     - path: pdm.lock
-      md5: d8ef1e7306a96903c411c58ae410abd5
-      size: 528467
+      md5: f0742ba5c2a2485727546699e2e29ee5
+      size: 528461
     - path: pyproject.toml
-      md5: f3eddc0c4dc1c80bacd6b5c089f69422
-      size: 714
+      md5: b53ed42b8463034532897c6fb6a16544
+      size: 722
     outs:
-    - path: training/metrics.json
-      md5: e7e365d881649f06d1d3ac175b72539a
-      size: 427
-    - path: training/plots
-      md5: 08aa7273a4441e4968bd275aa7d23cab.dir
-      size: 27263
-      nfiles: 13
+    - path: eval/metrics.json
+      md5: 25c2d204fd7114cd9991808ea240c78d
+      size: 38
+    - path: eval/plots/sklearn/
+      md5: a4c0ad5327cee452b2072de0aba6f072.dir
+      size: 26842
+      nfiles: 1
