@@ -2,3 +2,8 @@
 /02a_NN_Preprocessing.py
 /02b_Classification_Preprocessing.py
 /03b_Classification_Modeling.py
+/00_Collecting_Data.ipynb
+/01_Cleaning_Data.ipynb
+/02a_NN_Preprocessing.ipynb
+/04a_Evaluating_Model.ipynb
+/03a_Training_Model.ipynb
