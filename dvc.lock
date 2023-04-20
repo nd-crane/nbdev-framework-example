@@ -1,55 +1,58 @@
 schema: '2.0'
 stages:
   collecting:
-    cmd: jupyter nbconvert --to python --execute nbs/00_Collecting_Data.ipynb --output
-      ../scripts/00_Collecting_Data
+    cmd: "papermill nbs/00_Collecting_Data.ipynb scripts/00_Collecting_Data.ipynb\
+      \ --cwd nbs/\n"
     deps:
+    - path: .pdm.toml
+      md5: 833e0dcd5747728dfba5576415c3b0b7
+      size: 99
     - path: data/raw-data
       md5: 23bab0752687dcb94db5dae45ec8885a.dir
       size: 362375821
       nfiles: 12
     - path: nbs/00_Collecting_Data.ipynb
-      md5: b3baccae56d93a40946f32bc9526d3e2
-      size: 7382
+      md5: 771c396e23342ff2a534218cf0fef16f
+      size: 26859
     - path: pdm.lock
-      md5: e4b183bd55071ffa4a5729b5f35b7474
-      size: 514199
+      md5: cc77ffe666901ac84351a7f7ca7189e1
+      size: 506941
     - path: pyproject.toml
-      md5: da79de29e64ea326681e721ec816fda6
-      size: 821
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
     outs:
-    - path: data/working-data/Concatenated_Orig_data.csv
+    - path: data/Concatenated_Orig_data.csv
       md5: 06d462084a283c2ca352c6cb453791e2
       size: 330116431
-    - path: scripts/00_Collecting_Data.py
-      md5: aeea755608807f45a64bdd442f090ef1
-      size: 1987
+    - path: scripts/00_Collecting_Data.ipynb
+      md5: 862d01718113b6a4c7eec76f789e8635
+      size: 26876
   cleaning:
-    cmd: jupyter nbconvert --to python --execute nbs/01_Cleaning_Data.ipynb --output
-      ../scripts/01_Cleaning_Data
+    cmd: "papermill nbs/01_Cleaning_Data.ipynb scripts/01_Cleaning_Data.ipynb --cwd\
+      \ nbs/\n"
     deps:
-    - path: data/raw-data/AIDCODE.csv
-      md5: 21ed81f14bfe947d686f9b8dfa42d74f
-      size: 4921
-    - path: data/working-data/Concatenated_Orig_data.csv
+    - path: .pdm.toml
+      md5: 833e0dcd5747728dfba5576415c3b0b7
+      size: 99
+    - path: data/Concatenated_Orig_data.csv
       md5: 06d462084a283c2ca352c6cb453791e2
       size: 330116431
     - path: nbs/01_Cleaning_Data.ipynb
-      md5: 117a2820080131cdd9e26779a9a88ecf
-      size: 14092
+      md5: f32a4762653686de37d437640fab2ea8
+      size: 12820
     - path: pdm.lock
-      md5: e4b183bd55071ffa4a5729b5f35b7474
-      size: 514199
+      md5: cc77ffe666901ac84351a7f7ca7189e1
+      size: 506941
     - path: pyproject.toml
-      md5: da79de29e64ea326681e721ec816fda6
-      size: 821
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
     outs:
-    - path: data/cleaned-data/Concatenated_Clean_data.csv
+    - path: data/Concatenated_Clean_data.csv
       md5: 0aa79c9fc5a4f07cdf69faa47dc63bd4
       size: 133064786
-    - path: scripts/01_Cleaning_Data.py
-      md5: e348721642a0cfc992dc3e254a1e6234
-      size: 1723
+    - path: scripts/01_Cleaning_Data.ipynb
+      md5: d5843b3483edbc67a84b6f2e7946471b
+      size: 20424
   nn-preprocess:
     cmd: jupyter nbconvert --to python --execute nbs/02a_NN_Preprocessing.ipynb --output
       ../scripts/02a_NN_Preprocessing
@@ -140,3 +143,118 @@ stages:
     - path: scripts/03a_Training_Model.py
       md5: b40020ab86232c85af774d8d6b41f2d6
       size: 2905
+  exp:
+    cmd: "papermill  nbs/exp.ipynb  scripts/exp.ipynb -p TOKENIZER bert-base-cased\
+      \ -p LEARNING_RATE 5e-05 -p BATCH_SIZE 8 -p EPOCHS 2\n"
+    deps:
+    - path: Text_label_data_c119.csv
+      md5: c03a5a44891c28b1bd3a654cf3e68062
+      size: 307770
+    - path: nbs/exp.ipynb
+      md5: eefd77142b93fe2cefe9637f94ec55ad
+      size: 50389
+    - path: pdm.lock
+      md5: f0742ba5c2a2485727546699e2e29ee5
+      size: 528461
+    - path: pyproject.toml
+      md5: b53ed42b8463034532897c6fb6a16544
+      size: 722
+    outs:
+    - path: eval/metrics.json
+      md5: 25c2d204fd7114cd9991808ea240c78d
+      size: 38
+    - path: eval/plots/sklearn/
+      md5: a4c0ad5327cee452b2072de0aba6f072.dir
+      size: 26842
+      nfiles: 1
+  preprocess_nn:
+    cmd: "papermill nbs/02a_NN_Preprocessing.ipynb scripts/02a_NN_Preprocessing.ipynb\
+      \ --cwd nbs/\n"
+    deps:
+    - path: .pdm.toml
+      md5: 833e0dcd5747728dfba5576415c3b0b7
+      size: 99
+    - path: data/Concatenated_Clean_data.csv
+      md5: 0aa79c9fc5a4f07cdf69faa47dc63bd4
+      size: 133064786
+    - path: nbs/02a_NN_Preprocessing.ipynb
+      md5: ea3212cabb377b831ebd75ffa4a41608
+      size: 19008
+    - path: pdm.lock
+      md5: cc77ffe666901ac84351a7f7ca7189e1
+      size: 506941
+    - path: pyproject.toml
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
+    outs:
+    - path: data/splits
+      md5: fcef43f5241fbb6b0b8ad770cbf6fde2.dir
+      size: 3270940
+      nfiles: 40
+    - path: scripts/02a_NN_Preprocessing.ipynb
+      md5: b0281986021239111032de5e9b88d5db
+      size: 32189
+  train_nn:
+    cmd: "papermill nbs/03a_Training_Model.ipynb scripts/03a_Training_Model.ipynb\
+      \ -p TOKENIZER bert-base-cased -p LEARNING_RATE 5e-05 -p BATCH_SIZE 8 -p EPOCHS\
+      \ 2 -p KFOLD 5 --cwd nbs/\n"
+    deps:
+    - path: .pdm.toml
+      md5: 833e0dcd5747728dfba5576415c3b0b7
+      size: 99
+    - path: data/splits/test/FAA-5.csv
+      md5: 0155ceef0c51f7de5498ab3234c7abf9
+      size: 65261
+    - path: data/splits/train/FAA-5.csv
+      md5: 08ba6b6515fabc53d599d8c7ce83e6f0
+      size: 208330
+    - path: data/splits/val/FAA-5.csv
+      md5: e10a65021c8d886ce4c2fdf73804f2af
+      size: 52177
+    - path: nbs/03a_Training_Model.ipynb
+      md5: fe014b888e2e510a076f628d72e8263b
+      size: 7866
+    - path: pdm.lock
+      md5: cc77ffe666901ac84351a7f7ca7189e1
+      size: 506941
+    - path: pyproject.toml
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
+    outs:
+    - path: model/
+      md5: 4b1f98bf1d7f764632e22518839f7316.dir
+      size: 434223096
+      nfiles: 7
+    - path: scripts/03a_Training_Model.ipynb
+      md5: 4db1f51f4e9ce0c0f44906b86724cfed
+      size: 30388
+  eval:
+    cmd: "papermill nbs/04a_Evaluating_Model.ipynb scripts/04a_Evaluating_Model.ipynb\
+      \ -p KFOLD 5 --cwd nbs/\n"
+    deps:
+    - path: .pdm.toml
+      md5: 833e0dcd5747728dfba5576415c3b0b7
+      size: 99
+    - path: data/splits/val/FAA-5.csv
+      md5: e10a65021c8d886ce4c2fdf73804f2af
+      size: 52177
+    - path: nbs/04a_Evaluating_Model.ipynb
+      md5: fd0a834f5e01e8551609b361617538ec
+      size: 6554
+    - path: pdm.lock
+      md5: cc77ffe666901ac84351a7f7ca7189e1
+      size: 506941
+    - path: pyproject.toml
+      md5: f3eddc0c4dc1c80bacd6b5c089f69422
+      size: 714
+    outs:
+    - path: eval/metrics.json
+      md5: 11e2265e5b8b8db2a03f0fdc3dc70580
+      size: 38
+    - path: eval/plots/sklearn
+      md5: e9e3afb5da55cf427d58f5d7b816382a.dir
+      size: 26842
+      nfiles: 1
+    - path: scripts/04a_Evaluating_Model.ipynb
+      md5: 9e2ad82ac4c741de382fe376db5e8146
+      size: 45680
