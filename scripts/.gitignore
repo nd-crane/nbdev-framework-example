@@ -7,3 +7,8 @@
 /02a_NN_Preprocessing.ipynb
 /04a_Evaluating_Model.ipynb
 /03a_Training_Model.ipynb
+/01_data_collection.ipynb
+/02_data_cleaning.ipynb
+/03_feature_extraction.ipynb
+/05_training.ipynb
+/06_inference.ipynb

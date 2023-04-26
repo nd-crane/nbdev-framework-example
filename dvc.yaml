@@ -1,54 +1,54 @@
 stages:
-  collecting:
+  data_collection:
     cmd: >
         papermill
-        nbs/00_Collecting_Data.ipynb
-        scripts/00_Collecting_Data.ipynb
+        nbs/01_data_collection.ipynb
+        scripts/01_data_collection.ipynb
         --cwd nbs/
     deps:
-    - nbs/00_Collecting_Data.ipynb
+    - nbs/01_data_collection.ipynb
     - pdm.lock
     - pyproject.toml
     - data/raw-data
     - .pdm.toml
     outs:
-    - scripts/00_Collecting_Data.ipynb
+    - scripts/01_data_collection.ipynb
     - data/Concatenated_Orig_data.csv
-  cleaning:
+  data_cleaning:
     cmd: >
         papermill
-        nbs/01_Cleaning_Data.ipynb
-        scripts/01_Cleaning_Data.ipynb
+        nbs/02_data_cleaning.ipynb
+        scripts/02_data_cleaning.ipynb
         --cwd nbs/
     deps:
-    - nbs/01_Cleaning_Data.ipynb
+    - nbs/02_data_cleaning.ipynb
     - pdm.lock
     - pyproject.toml
     - data/Concatenated_Orig_data.csv
     - .pdm.toml
     outs:
-    - scripts/01_Cleaning_Data.ipynb
+    - scripts/02_data_cleaning.ipynb
     - data/Concatenated_Clean_data.csv
-  preprocess_nn:
+  feature_extraction:
     cmd: >
         papermill
-        nbs/02a_NN_Preprocessing.ipynb
-        scripts/02a_NN_Preprocessing.ipynb
+        nbs/03_feature_extraction.ipynb
+        scripts/03_feature_extraction.ipynb
         --cwd nbs/
     deps:
-    - nbs/02a_NN_Preprocessing.ipynb
+    - nbs/03_feature_extraction.ipynb
     - pdm.lock
     - pyproject.toml
     - data/Concatenated_Clean_data.csv
     - .pdm.toml
     outs:
-    - scripts/02a_NN_Preprocessing.ipynb 
+    - scripts/03_feature_extraction.ipynb 
     - data/splits
-  train_nn:
+  training:
     cmd: >
         papermill
-        nbs/03a_Training_Model.ipynb
-        scripts/03a_Training_Model.ipynb
+        nbs/05_training.ipynb
+        scripts/05_training.ipynb
         -p TOKENIZER ${tokenizer}
         -p LEARNING_RATE ${learning_rate}
         -p BATCH_SIZE ${batch_size}
@@ -56,7 +56,7 @@ stages:
         -p KFOLD ${kfold}
         --cwd nbs/
     deps:
-    - nbs/03a_Training_Model.ipynb
+    - nbs/05_training.ipynb
     - data/splits/train/FAA-${kfold}.csv
     - data/splits/test/FAA-${kfold}.csv
     - data/splits/val/FAA-${kfold}.csv
@@ -65,22 +65,22 @@ stages:
     - .pdm.toml
     outs:
     - model/
-    - scripts/03a_Training_Model.ipynb
+    - scripts/05_training.ipynb
   eval:
     cmd: >
         papermill
-        nbs/04a_Evaluating_Model.ipynb
-        scripts/04a_Evaluating_Model.ipynb
+        nbs/06_inference.ipynb
+        scripts/06_inference.ipynb
         -p KFOLD ${kfold}
         --cwd nbs/
     deps:
-    - nbs/04a_Evaluating_Model.ipynb
+    - nbs/06_inference.ipynb
     - pdm.lock
     - pyproject.toml
     - .pdm.toml
     - data/splits/val/FAA-${kfold}.csv
     outs:
-    - scripts/04a_Evaluating_Model.ipynb
+    - scripts/06_inference.ipynb
     - eval/plots/sklearn:
         persist: true
     metrics:
