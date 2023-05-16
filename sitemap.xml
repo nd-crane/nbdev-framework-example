@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/inference.html</loc>
+    <lastmod>2023-05-16T21:01:13.173Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/training.html</loc>
+    <lastmod>2023-05-16T21:01:13.849Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/data_collection.html</loc>
+    <lastmod>2023-05-16T21:01:14.485Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/output_testing.html</loc>
+    <lastmod>2023-05-16T21:01:14.757Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/feature_extraction.html</loc>
+    <lastmod>2023-05-16T21:01:15.273Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/index.html</loc>
+    <lastmod>2023-05-16T21:01:15.629Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/data_cleaning.html</loc>
+    <lastmod>2023-05-16T21:01:16.113Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nd-crane.github.io/nbdev-framework-example/example.html</loc>
+    <lastmod>2023-05-16T21:01:16.417Z</lastmod>
+  </url>
+</urlset>
